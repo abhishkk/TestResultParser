@@ -10,5 +10,7 @@ namespace Agent.Plugins.TestResultParser.Gateway
 
         /* Process the task output stream */
         Task ProcessDataAsync(Stream stream);
+
+        void Complete();
     }
 }

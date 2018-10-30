@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Agent.Plugins.TestResultParser.Bus;
@@ -14,36 +16,51 @@ namespace Agent.Plugins.TestResultParser.Gateway
         {
             var t = new GenericTestResultParser();
             Subscribe(t.ParseData);
-          
+
             throw new NotImplementedException();
         }
 
-        public Task ProcessDataAsync(Stream stream)
+        public async Task ProcessDataAsync(Stream stream)
         {
             //TODO string or stream?
-            return _broadcast.SendAsync("");
+
+            // Process line
+            const int bufferSize = 1024;
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, bufferSize))
+            {
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    await _broadcast.SendAsync(line);
+                }
+            }
         }
 
+        public void Complete()
+        {
+            _broadcast.Complete();
+            Task.WaitAll(_subscribers.Values.Select(x => x.Completion).ToArray());
+        }
 
         //TODO evaluate ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 2 }
         public Guid Subscribe(Action<string> handlerAction)
         {
             var handler = new ActionBlock<string>(handlerAction);
 
-            var subscription = _broadcast.LinkTo(handler, new DataflowLinkOptions { PropagateCompletion = true });
+            _broadcast.LinkTo(handler, new DataflowLinkOptions { PropagateCompletion = true });
 
-            return AddSubscription(subscription);
+            return AddSubscription(handler);
         }
 
         public void Unsubscribe(Guid subscriptionId)
         {
             if (_subscribers.TryRemove(subscriptionId, out var subscription))
             {
-                subscription.Dispose();
+                subscription.Complete();
             }
         }
 
-        private Guid AddSubscription(IDisposable subscription)
+        private Guid AddSubscription(ITargetBlock<string> subscription)
         {
             var subscriptionId = Guid.NewGuid();
             _subscribers.TryAdd(subscriptionId, subscription);
@@ -51,6 +68,6 @@ namespace Agent.Plugins.TestResultParser.Gateway
         }
 
         private readonly BroadcastBlock<string> _broadcast = new BroadcastBlock<string>(message => message);
-        private readonly ConcurrentDictionary<Guid, IDisposable> _subscribers = new ConcurrentDictionary<Guid, IDisposable>();
+        private readonly ConcurrentDictionary<Guid, ITargetBlock<string>> _subscribers = new ConcurrentDictionary<Guid, ITargetBlock<string>>();
     }
 }
