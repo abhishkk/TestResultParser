@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Agent.Plugins.TestResultParser.Bus
+namespace Agent.Plugins.TestResultParser.Bus.Interfaces
 {
     interface IBus<TMessage>
     {

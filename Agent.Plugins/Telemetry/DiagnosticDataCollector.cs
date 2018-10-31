@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+using System;
 using System.Threading.Tasks;
 
 namespace Agent.Plugins.TestResultParser.Telemetry

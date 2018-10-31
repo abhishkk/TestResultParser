@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Agent.Plugins.TestResultParser.Bus;
+using Agent.Plugins.TestResultParser.Bus.Interfaces;
+using Agent.Plugins.TestResultParser.Gateway.Interfaces;
 using Agent.Plugins.TestResultParser.Parser;
 
 namespace Agent.Plugins.TestResultParser.Gateway

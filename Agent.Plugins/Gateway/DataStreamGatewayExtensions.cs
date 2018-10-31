@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Agent.Plugins.TestResultParser.Gateway;
 using Agent.Plugins.TestResultParser.Parser;
+using Agent.Plugins.TestResultParser.Parser.Interfaces;
 
 namespace Agent.Plugins.TestResultParser.Bus
 {

@@ -1,4 +1,4 @@
-﻿namespace Agent.Plugins.TestResultParser.TestResult.Models
+﻿namespace Agent.Plugins.TestResultParser.TestResult.Models.Interfaces
 {
     interface ITestRun
     {

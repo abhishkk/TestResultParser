@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Agent.Plugins.TestResultParser.Parser.Interfaces;
+using System;
 using System.Threading;
 
 namespace Agent.Plugins.TestResultParser.Parser
