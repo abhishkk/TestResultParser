@@ -5,10 +5,7 @@ VisualStudioVersion = 15.0.28218.60
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agent.Plugins.TestResultParser", "src\Agent.Plugins\Agent.Plugins.TestResultParser.csproj", "{0BF8DDCA-848F-40EC-8AFD-EE3A1F2D0D5D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{161AEBCE-84D4-4A97-B86E-EF1062DE407A}"
-	ProjectSection(SolutionItems) = preProject
-		src\TestingApp\TestingApp.csproj = src\TestingApp\TestingApp.csproj
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingApp", "src\TestingApp\TestingApp.csproj", "{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +17,10 @@ Global
 		{0BF8DDCA-848F-40EC-8AFD-EE3A1F2D0D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BF8DDCA-848F-40EC-8AFD-EE3A1F2D0D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BF8DDCA-848F-40EC-8AFD-EE3A1F2D0D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
