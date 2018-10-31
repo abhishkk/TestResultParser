@@ -5,6 +5,6 @@ namespace Agent.Plugins.TestResultParser.TestResult.Converter.Interfaces
 {
     interface ITestRunToTcmRunConverter
     {
-        void Convert(ITestRun testRun, ITcmTestRun tcmTestRun);
+        void Convert(TestRun testRun, ITcmTestRun tcmTestRun);
     }
 }

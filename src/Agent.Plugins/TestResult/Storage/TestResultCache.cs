@@ -6,12 +6,12 @@ namespace Agent.Plugins.TestResultParser.TestResult.Storage
 {
     class TestResultCache : ITestResultCache
     {
-        public void AddTestResult(string parserName, ITestResult testResult)
+        public void AddTestResult(string parserName, Models.TestResult testResult)
         {
             throw new NotImplementedException();
         }
 
-        public void AddTestSummary(string parserName, ITestSummary testSummary)
+        public void AddTestSummary(string parserName, TestSummary testSummary)
         {
             throw new NotImplementedException();
         }
