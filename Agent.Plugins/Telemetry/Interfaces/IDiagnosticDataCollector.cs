@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Agent.Plugins.TestResultParser.Telemetry
+namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
 {
     interface IDiagnosticDataCollector
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Agent.Plugins.TestResultParser.ParserConfig.Interfaces;
 
 namespace Agent.Plugins.TestResultParser.ParserConfig
 {

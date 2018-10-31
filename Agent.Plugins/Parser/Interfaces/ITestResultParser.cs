@@ -1,4 +1,4 @@
-﻿namespace Agent.Plugins.TestResultParser.Parser
+﻿namespace Agent.Plugins.TestResultParser.Parser.Interfaces
 {
     public interface ITestResultParser
     {
