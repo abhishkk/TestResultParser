@@ -23,6 +23,6 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Time taken by the test case for run
         /// </summary>
-        DateTime ExecutionTime { get; set; }
+        TimeSpan ExecutionTime { get; set; }
     }
 }

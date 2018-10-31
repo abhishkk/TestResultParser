@@ -21,11 +21,11 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Total number of tests that were skipped
         /// </summary>
-        int TotalSkipped { get; set; }
+        long TotalSkipped { get; set; }
 
         /// <summary>
         /// Total execution time
         /// </summary>
-        DateTime TotalExecutionTime { get; set; }
+        TimeSpan TotalExecutionTime { get; set; }
     }
 }
