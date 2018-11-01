@@ -8,6 +8,7 @@
     {
         public List<TestResult> TestResults = new List<TestResult> { };
 
+        /// <inheritdoc/>
         public void ParseData(string data)
         {
             
