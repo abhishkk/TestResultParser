@@ -12,21 +12,15 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
     {
         private ITelemetryDataCollector telemetryDataCollector;
         private IDiagnosticDataCollector diagnosticDataCollector;
-        private ParserState state;
-        private IResultParser testResultParser;
-        private IRunSummaryParser testRunSummaryParser;
 
-        public PythonTestResultParser() : this(TelemetryDataCollector.Instance, DiagnosticDataCollector.Instance, new ResultParser(), new RunSummaryParser())
+        public PythonTestResultParser() : this(TelemetryDataCollector.Instance, DiagnosticDataCollector.Instance)
         {
         }
 
-        public PythonTestResultParser(ITelemetryDataCollector telemetryCollector, IDiagnosticDataCollector diagnosticsCollector, IResultParser testResultParser, IRunSummaryParser testRunSummaryParser)
+        public PythonTestResultParser(ITelemetryDataCollector telemetryCollector, IDiagnosticDataCollector diagnosticsCollector)
         {
             this.telemetryDataCollector = telemetryCollector;
             this.diagnosticDataCollector = diagnosticsCollector;
-            this.testResultParser = testResultParser;
-            this.testRunSummaryParser = testRunSummaryParser;
-            this.state = ParserState.Waiting;
         }
 
         /// <summary>
@@ -36,6 +30,6 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         public void ParseData(string data)
         {
             throw new NotImplementedException();
-        }]
+        }
     }
 }
