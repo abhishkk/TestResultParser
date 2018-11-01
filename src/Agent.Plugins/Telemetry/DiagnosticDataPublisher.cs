@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Text;
 using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
 
 namespace Agent.Plugins.TestResultParser.Telemetry
 {
-    class TelemetryReportingGateway : ITelemetryReportingGateway
+    class DiagnosticDataPublisher : IDiagnosticDataPublisher
     {
-        public Task PublishTelemetryAsync(TelemetryEvent telemetry)
+        /// <inheritdoc />
+        public void PublishDiagnosticData()
         {
             throw new NotImplementedException();
         }
