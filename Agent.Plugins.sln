@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agent.Plugins.TestResultPar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingApp", "src\TestingApp\TestingApp.csproj", "{C63ACEA9-A7F4-43E2-A1FF-D1705B8060C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.Plugins.UnitTests", "tests\Agent.Plugins.UnitTests\Agent.Plugins.UnitTests\Agent.Plugins.UnitTests.csproj", "{71941BAA-C619-4FB3-993E-71533F8CE7B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agent.Plugins.UnitTests", "tests\Agent.Plugins.UnitTests\Agent.Plugins.UnitTests\Agent.Plugins.UnitTests.csproj", "{71941BAA-C619-4FB3-993E-71533F8CE7B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -21,7 +21,7 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         TestOutcome Outcome { get; set; }
 
         /// <summary>
-        /// Time taken by the test case for run
+        /// Time taken by the test case to run
         /// </summary>
         TimeSpan ExecutionTime { get; set; }
     }

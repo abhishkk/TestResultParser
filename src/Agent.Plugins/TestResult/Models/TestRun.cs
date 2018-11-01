@@ -18,6 +18,6 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Summary for the test run
         /// </summary>
-        TestSummary TestSummary { get; set; }
+        TestRunSummary TestRunSummary { get; set; }
     }
 }
