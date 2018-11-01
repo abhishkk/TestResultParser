@@ -11,7 +11,7 @@ namespace Agent.Plugins.TestResultParser.TestResult.Storage
             throw new NotImplementedException();
         }
 
-        public void AddTestSummary(string parserName, TestSummary testSummary)
+        public void AddTestSummary(string parserName, TestRunSummary testSummary)
         {
             throw new NotImplementedException();
         }

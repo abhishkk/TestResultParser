@@ -6,7 +6,7 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
     using System;
 
     // Represents the summary of the test run
-    public class TestSummary
+    public class TestRunSummary
     {
         /// <summary>
         /// Total number of tests that are part of the run

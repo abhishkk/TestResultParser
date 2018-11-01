@@ -8,7 +8,7 @@ namespace Agent.Plugins.TestResultParser.TestResult.Storage
         void AddTestResult(string parserName, Models.TestResult testResult);
 
         /* Publish test summary to Cache service per runner */
-        void AddTestSummary(string parserName, TestSummary testSummary);
+        void AddTestSummary(string parserName, TestRunSummary testSummary);
 
         /* Signal test cache storage to publish test run for runner with available details */
         void PublishTestRun(string parserName);
