@@ -1,10 +1,29 @@
-﻿using System.Threading.Tasks;
-
-namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
+﻿namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
 {
-    interface IDiagnosticDataCollector
+    public interface IDiagnosticDataCollector
     {
-        /* Publish diagnostic data to Pipeline service (eg: Build) */
-        Task PublishDiagnosticDataAsync();
+        /// <summary>
+        /// Verbose diagnostics.
+        /// </summary>
+        /// <param name="text">Diagnostics text.</param>
+        void Verbose(string text);
+
+        /// <summary>
+        /// Info diagnostics.
+        /// </summary>
+        /// <param name="text">Diagnostics text.</param>
+        void Info(string text);
+
+        /// <summary>
+        /// Warning diagnostics.
+        /// </summary>
+        /// <param name="text">Diagnostics text.</param>
+        void Warning(string text);
+
+        /// <summary>
+        /// Error diagnostics.
+        /// </summary>
+        /// <param name="text">Diagnostics text.</param>
+        void Error(string error);
     }
 }

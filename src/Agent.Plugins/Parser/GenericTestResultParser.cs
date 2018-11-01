@@ -1,9 +1,9 @@
-﻿using Agent.Plugins.TestResultParser.Parser.Interfaces;
-using System;
-using System.Threading;
-
-namespace Agent.Plugins.TestResultParser.Parser
+﻿namespace Agent.Plugins.TestResultParser.Parser
 {
+    using System;
+    using System.Threading;
+    using Agent.Plugins.TestResultParser.Parser.Interfaces;
+
     public class GenericTestResultParser : ITestResultParser
     {
         public void ParseData(string data)

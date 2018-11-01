@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using Agent.Plugins.TestResultParser.Bus;
 using Agent.Plugins.TestResultParser.Gateway;
 using Agent.Plugins.TestResultParser.Parser;
