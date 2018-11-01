@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-
-namespace Agent.Plugins.TestResultParser.Telemetry
+﻿namespace Agent.Plugins.TestResultParser.Telemetry
 {
-    class TelemetryPublisher : ITelemetryPublisher
+    using System;
+    using System.Collections.Generic;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+
+    class TelemetryDataPublisher : ITelemetryDataPublisher
     {
         /// <inheritdoc />
         public void PublishTelemetry(IDictionary<string, object> properties)

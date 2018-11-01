@@ -1,9 +1,9 @@
-﻿using System;
-using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-using System.Threading.Tasks;
-
-namespace Agent.Plugins.TestResultParser.Telemetry
+﻿namespace Agent.Plugins.TestResultParser.Telemetry
 {
+    using System;
+    using System.Threading.Tasks;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+
     public class DiagnosticDataCollector : IDiagnosticDataCollector
     {
         private static IDiagnosticDataCollector instance;

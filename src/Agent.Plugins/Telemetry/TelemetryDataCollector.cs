@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-
-namespace Agent.Plugins.TestResultParser.Telemetry
+﻿namespace Agent.Plugins.TestResultParser.Telemetry
 {
+    using System;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+
     public class TelemetryDataCollector : ITelemetryDataCollector
     {
         private static ITelemetryDataCollector instance;

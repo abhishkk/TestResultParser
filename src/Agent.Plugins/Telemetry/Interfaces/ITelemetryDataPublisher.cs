@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
+﻿namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
 {
-    interface ITelemetryPublisher
+    using System.Collections.Generic;
+
+    interface ITelemetryDataPublisher
     {
         /// <summary>
         /// Publish telemetry properties to pipeline telemetry service.

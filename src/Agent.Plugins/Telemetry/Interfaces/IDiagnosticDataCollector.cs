@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
+﻿namespace Agent.Plugins.TestResultParser.Telemetry.Interfaces
 {
     public interface IDiagnosticDataCollector
     {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-
-namespace Agent.Plugins.TestResultParser.Telemetry
+﻿namespace Agent.Plugins.TestResultParser.Telemetry
 {
+    using System;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+
     class DiagnosticDataPublisher : IDiagnosticDataPublisher
     {
         /// <inheritdoc />

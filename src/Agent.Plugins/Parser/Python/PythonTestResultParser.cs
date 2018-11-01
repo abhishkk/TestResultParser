@@ -1,10 +1,10 @@
-﻿using System;
-using Agent.Plugins.TestResultParser.Parser.Interfaces;
-using Agent.Plugins.TestResultParser.Telemetry;
-using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-
-namespace Agent.Plugins.TestResultParser.Parser.Python
+﻿namespace Agent.Plugins.TestResultParser.Parser.Python
 {
+    using System;
+    using Agent.Plugins.TestResultParser.Parser.Interfaces;
+    using Agent.Plugins.TestResultParser.Telemetry;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+
     /// <summary>
     /// Python test result parser.
     /// </summary>
@@ -17,7 +17,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         {
         }
 
-        public PythonTestResultParser(ITelemetryDataCollector telemetryCollector, IDiagnosticDataCollector diagnosticsCollector)
+        internal PythonTestResultParser(ITelemetryDataCollector telemetryCollector, IDiagnosticDataCollector diagnosticsCollector)
         {
             this.telemetryDataCollector = telemetryCollector;
             this.diagnosticDataCollector = diagnosticsCollector;
