@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using Agent.Plugins.TestResultParser.Parser.Interfaces;
-    using TestResult = Agent.Plugins.TestResultParser.TestResult.Models.TestResult;
+    using TestResult = TestResult.Models.TestResult;
 
     public class MochaTestResultParser : ITestResultParser
     {

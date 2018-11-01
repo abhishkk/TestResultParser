@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
+﻿namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 {
+    using System.Text.RegularExpressions;
+
     public class MochaTestResultParserRegularExpressions
     {
         public static Regex PassedTestCaseMatcher { get; } = new Regex("  ΓêÜ (.*)");
