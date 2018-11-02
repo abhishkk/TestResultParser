@@ -4,11 +4,9 @@
 
     public class MochaTestResultParserRegularExpressions
     {
-        public static Regex MochaTestRunStartIndicator { get; } = new Regex("(Mocha)|(mocha)");
+        // Check if logs come prepended with the time stamp and if so have a definitive regex to ignore them to tighten the patterns
 
         public static Regex PassedTestCaseMatcher { get; } = new Regex("  ΓêÜ (.*)");
-
-        public static Regex PassedTestCaseOKMatcher { get; } = new Regex("    OK (.*)");
 
         public static Regex PassedTestCaseUnicodeMatcher { get; } = new Regex("  ✓ (.*)");
 

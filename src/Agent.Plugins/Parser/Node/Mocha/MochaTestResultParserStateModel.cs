@@ -6,7 +6,6 @@
 
     public enum MochaTestResultParserStateModel
     {
-        LookingForTestRunStartIndicator,
         ParsingTestResults,
         SummaryEncountered,
         ParsingStackTracesPostSummary
