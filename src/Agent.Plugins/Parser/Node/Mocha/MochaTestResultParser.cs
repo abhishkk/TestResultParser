@@ -10,8 +10,6 @@
     {
         public TestRun TestRun = new TestRun { TestResults = new Collection<TestResult>() };
 
-        private MochaTestResultParserStateModel state = MochaTestResultParserStateModel.ParsingTestResults;
-
         /// <inheritdoc/>
         public void Parse(LogLineData testResultsLine)
         {
