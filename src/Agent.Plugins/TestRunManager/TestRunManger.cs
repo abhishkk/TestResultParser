@@ -5,22 +5,22 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
 {
     using Agent.Plugins.TestResultParser.Publish.Interfaces;
     using Agent.Plugins.TestResultParser.TestResult.Models;
-    using Agent.Plugins.TestResultParser.Validator;
-    using Agent.Plugins.TestResultParser.Validator.Interfaces;
+    using Agent.Plugins.TestResultParser.ConflictResolver;
+    using Agent.Plugins.TestResultParser.ConflictResolver.Interfaces;
 
     /// <inheritdoc/>
     public class TestRunManger : ITestRunManager
     {
         ITestRunPublisher publisher;
 
-        ITestRunValidator validator;
+        ITestRunConflictResolver conflictResolver;
 
         /// <summary>
         /// Construct the TestRunManger
         /// </summary>
         /// <param name="testRunPublisher"></param>
         public TestRunManger(ITestRunPublisher testRunPublisher)
-            : this(testRunPublisher, new TestRunValidator())
+            : this(testRunPublisher, new TestRunConflictResolver())
         {
         }
 
@@ -28,16 +28,16 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
         /// Construct the TestRunManger
         /// </summary>
         /// <param name="testRunPublisher"></param>
-        public TestRunManger(ITestRunPublisher testRunPublisher, ITestRunValidator testRunValidator)
+        public TestRunManger(ITestRunPublisher testRunPublisher, ITestRunConflictResolver testRunConflictResolver)
         {
             publisher = testRunPublisher;
-            validator = testRunValidator;
+            conflictResolver = testRunConflictResolver;
         }
 
         /// <inheritdoc/>
         public void Publish(TestRun testRun)
         {
-            var validatedTestRun = validator.Validate(testRun);
+            var validatedTestRun = conflictResolver.Resolve(testRun);
             publisher.Publish(validatedTestRun);
         }
     }

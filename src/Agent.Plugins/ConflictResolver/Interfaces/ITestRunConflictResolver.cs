@@ -1,20 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Agent.Plugins.TestResultParser.Validator.Interfaces
+namespace Agent.Plugins.TestResultParser.ConflictResolver.Interfaces
 {
     using Agent.Plugins.TestResultParser.TestResult.Models;
 
     /// <summary>
-    /// Validates if the TestRun data is consistent
+    /// Sanitizes the TestRun data
     /// </summary>
-    public interface ITestRunValidator
+    public interface ITestRunConflictResolver
     {
         /// <summary>
-        /// Validates and returns a valid TestRun
+        /// Resolves the conflicts for the TestRun
         /// </summary>
         /// <param name="testRun">Input Test run information</param>
-        /// <returns>Valid Test run</returns>
-        TestRun Validate(TestRun testRun);
+        /// <returns>Sanitized test run</returns>
+        TestRun Resolve(TestRun testRun);
     }
 }
