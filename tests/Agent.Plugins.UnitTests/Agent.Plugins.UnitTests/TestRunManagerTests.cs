@@ -3,16 +3,22 @@
 
 namespace Agent.Plugins.UnitTests
 {
+    using Agent.Plugins.TestResultParser.Publish.Interfaces;
+    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
     using Agent.Plugins.TestResultParser.TestResult.Models;
-    using Agent.Plugins.TestResultParser.ConflictResolver;
+    using Agent.Plugins.TestResultParser.TestRunManger;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
     using System.Collections.Generic;
     using TestResult = Agent.Plugins.TestResultParser.TestResult.Models.TestResult;
 
     [TestClass]
-    public class TestRunConflictResolverTests
+    public class TestRunManagerTests
     {
-        TestRunConflictResolver testRunConflictResolver;
+        private TestRunManager testRunManager;
+        private Mock<ITestRunPublisher> publisher;
+        private Mock<IDiagnosticDataCollector> diagnosticDataCollector;
+        private Mock<ITelemetryDataCollector> telemetryDataCollector;
 
         TestRunSummary invalidSummary = new TestRunSummary
         {
@@ -29,52 +35,52 @@ namespace Agent.Plugins.UnitTests
             TotalExecutionTime = new System.TimeSpan(0, 0, 0, 1, 50)
         };
 
-        public TestRunConflictResolverTests()
+        public TestRunManagerTests()
         {
-            testRunConflictResolver = new TestRunConflictResolver();
+            this.publisher = new Mock<ITestRunPublisher>();
+            this.diagnosticDataCollector = new Mock<IDiagnosticDataCollector>();
+            this.telemetryDataCollector = new Mock<ITelemetryDataCollector>();
+            this.testRunManager = new TestRunManager(publisher.Object, diagnosticDataCollector.Object, telemetryDataCollector.Object);
         }
 
         [TestMethod]
-        public void ResolveForNullTestRunShouldReturnNull()
+        public void PublishForNullTestRunShouldReturnNull()
         {
-            var resultTestRun = testRunConflictResolver.Resolve(null);
-
-            Assert.IsNull(resultTestRun);
+            this.testRunManager.Publish(null);
+            this.diagnosticDataCollector.Verify(x => x.Error("TestRunManger.ValidateAndPrepareForPublish : TestRun or TestRunSummary is null."));
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithNullTestSummaryShouldReturnNull()
+        public void PublishForTestRunWithNullTestSummaryShouldReturnNull()
         {
             TestRun testRun = new TestRun();
-
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
-
-            Assert.IsNull(resultTestRun);
+            this.testRunManager.Publish(testRun);
+            this.diagnosticDataCollector.Verify(x => x.Error("TestRunManger.ValidateAndPrepareForPublish : TestRun or TestRunSummary is null."));
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithInValidTestSummaryShouldReturnNull()
+        public void PublishForTestRunWithInvalidTestSummaryShouldReturnNull()
         {
             TestRun testRun = new TestRun();
             testRun.TestRunSummary = this.invalidSummary;
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            this.testRunManager.Publish(testRun);
 
-            Assert.IsNull(resultTestRun);
+            this.diagnosticDataCollector.Verify(x=>x.Error("TestRunManger.ValidateAndPrepareForPublish : Total test count reported is less than sum of passed and failed tests."));
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithNoResultsAndValidTestSummaryShouldReturnTestRun()
+        public void PublishForTestRunWithNoResultsAndValidTestSummaryShouldReturnTestRun()
         {
             TestRun testRun = new TestRun() { TestRunSummary = this.validSummary };
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            this.testRunManager.Publish(testRun);
 
-            Assert.AreEqual(testRun, resultTestRun);
+            this.publisher.Verify(x => x.Publish(testRun), Times.Once);
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithMisMatchedFailedTestResultsAndTestSummaryShouldReturnTestRunWithFailedTestsCleared()
+        public void PublishForTestRunWithMismatchedFailedTestResultsAndTestSummaryShouldReturnTestRunWithFailedTestsCleared()
         {
             TestResult passedTest = new TestResult() { Name = "Test1", Outcome = TestOutcome.Passed };
             TestResult passedTest2 = new TestResult() { Name = "Test2", Outcome = TestOutcome.Passed };
@@ -86,8 +92,13 @@ namespace Agent.Plugins.UnitTests
             testRun.PassedTests = new List<TestResult>() { passedTest, passedTest2};
             testRun.FailedTests = new List<TestResult>() { failedTest, failedTest2 };
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            TestRun resultTestRun = null;
+            this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
 
+            this.testRunManager.Publish(testRun);
+
+            this.diagnosticDataCollector.Verify(x => x.Warning("TestRunManger.ValidateAndPrepareForPublish : Failed test count does not match the Test summary."));
+            
             Assert.AreEqual(testRun.PassedTests, resultTestRun.PassedTests);
             Assert.AreEqual(null, resultTestRun.FailedTests);
             Assert.AreEqual(this.validSummary, resultTestRun.TestRunSummary);
@@ -104,7 +115,12 @@ namespace Agent.Plugins.UnitTests
             testRun.PassedTests = new List<TestResult>() { passedTest };
             testRun.FailedTests = new List<TestResult>() { failedTest };
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            TestRun resultTestRun = null;
+            this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
+
+            this.testRunManager.Publish(testRun);
+
+            this.diagnosticDataCollector.Verify(x => x.Warning("TestRunManger.ValidateAndPrepareForPublish : Passed test count does not match the Test summary."));
 
             Assert.AreEqual(null, resultTestRun.PassedTests);
             Assert.AreEqual(testRun.FailedTests, resultTestRun.FailedTests);
@@ -121,7 +137,10 @@ namespace Agent.Plugins.UnitTests
             testRun.TestRunSummary = this.validSummary;
             testRun.PassedTests = new List<TestResult>() { passedTest, passedTest2 };
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            TestRun resultTestRun = null;
+            this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
+
+            this.testRunManager.Publish(testRun);
 
             Assert.AreEqual(testRun.PassedTests, resultTestRun.PassedTests);
             Assert.AreEqual(null, resultTestRun.FailedTests);
@@ -140,7 +159,10 @@ namespace Agent.Plugins.UnitTests
             testRun.FailedTests = new List<TestResult>() { failedTest };
             testRun.TestRunSummary = this.validSummary;
 
-            var resultTestRun = testRunConflictResolver.Resolve(testRun);
+            TestRun resultTestRun = null;
+            this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
+
+            this.testRunManager.Publish(testRun);
 
             Assert.AreEqual(testRun, resultTestRun);
         }
