@@ -3,7 +3,7 @@
     public enum MochaTestResultParserStateModel
     {
         ParsingTestResults,
-        SummaryEncountered,
-        ParsingStackTracesPostSummary
+        ParsingTestRunSummary,
+        PostSummaryParsing
     }
 }
