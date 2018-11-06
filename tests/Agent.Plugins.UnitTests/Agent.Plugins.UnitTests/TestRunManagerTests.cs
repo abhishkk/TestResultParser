@@ -20,21 +20,6 @@ namespace Agent.Plugins.UnitTests
         private Mock<IDiagnosticDataCollector> diagnosticDataCollector;
         private Mock<ITelemetryDataCollector> telemetryDataCollector;
 
-        TestRunSummary invalidSummary = new TestRunSummary
-        {
-            TotalTests = 4,
-            TotalPassed = 2,
-            TotalFailed = 3
-        };
-
-        TestRunSummary validSummary = new TestRunSummary
-        {
-            TotalTests = 5,
-            TotalPassed = 2,
-            TotalFailed = 1,
-            TotalExecutionTime = new System.TimeSpan(0, 0, 0, 1, 50)
-        };
-
         public TestRunManagerTests()
         {
             this.publisher = new Mock<ITestRunPublisher>();
@@ -44,35 +29,40 @@ namespace Agent.Plugins.UnitTests
         }
 
         [TestMethod]
-        public void PublishForNullTestRunShouldReturnNull()
+        public void PublishForNullTestRunShouldNotPublishAndLogError()
         {
             this.testRunManager.Publish(null);
+
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Never);
             this.diagnosticDataCollector.Verify(x => x.Error("TestRunManger.ValidateAndPrepareForPublish : TestRun or TestRunSummary is null."));
         }
 
         [TestMethod]
-        public void PublishForTestRunWithNullTestSummaryShouldReturnNull()
+        public void PublishForTestRunWithNullTestSummaryShouldNotPublishAndLogError()
         {
             TestRun testRun = new TestRun();
             this.testRunManager.Publish(testRun);
+
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Never);
             this.diagnosticDataCollector.Verify(x => x.Error("TestRunManger.ValidateAndPrepareForPublish : TestRun or TestRunSummary is null."));
         }
 
         [TestMethod]
-        public void PublishForTestRunWithInvalidTestSummaryShouldReturnNull()
+        public void PublishForTestRunWithInvalidTestSummaryShouldNotPublishAndLogError()
         {
             TestRun testRun = new TestRun();
-            testRun.TestRunSummary = this.invalidSummary;
+            testRun.TestRunSummary = this.CreateTestRunSummary(4, 3, 2);
 
             this.testRunManager.Publish(testRun);
 
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Never);
             this.diagnosticDataCollector.Verify(x=>x.Error("TestRunManger.ValidateAndPrepareForPublish : Total test count reported is less than sum of passed and failed tests."));
         }
 
         [TestMethod]
-        public void PublishForTestRunWithNoResultsAndValidTestSummaryShouldReturnTestRun()
+        public void PublishForTestRunWithNoResultsAndValidTestSummaryShouldPublishTheTestRun()
         {
-            TestRun testRun = new TestRun() { TestRunSummary = this.validSummary };
+            TestRun testRun = new TestRun() { TestRunSummary = this.CreateTestRunSummary(4, 2, 1) };
 
             this.testRunManager.Publish(testRun);
 
@@ -80,17 +70,12 @@ namespace Agent.Plugins.UnitTests
         }
 
         [TestMethod]
-        public void PublishForTestRunWithMismatchedFailedTestResultsAndTestSummaryShouldReturnTestRunWithFailedTestsCleared()
+        public void PublishForTestRunWithMismatchedFailedTestResultsAndTestSummaryShouldPublishTestRunWithFailedTestsCleared()
         {
-            TestResult passedTest = new TestResult() { Name = "Test1", Outcome = TestOutcome.Passed };
-            TestResult passedTest2 = new TestResult() { Name = "Test2", Outcome = TestOutcome.Passed };
-            TestResult failedTest = new TestResult() { Name = "FailingTest", Outcome = TestOutcome.Failed };
-            TestResult failedTest2 = new TestResult() { Name = "FailingTest2", Outcome = TestOutcome.Failed };
-
-            TestRun testRun = new TestRun();
-            testRun.TestRunSummary = this.validSummary;
-            testRun.PassedTests = new List<TestResult>() { passedTest, passedTest2};
-            testRun.FailedTests = new List<TestResult>() { failedTest, failedTest2 };
+            var passedTestList = this.CreateTestList(2, TestOutcome.Passed);
+            var failedTestList = this.CreateTestList(2, TestOutcome.Failed);
+            var summary = this.CreateTestRunSummary(4, 2, 1);
+            TestRun testRun = new TestRun { PassedTests = passedTestList, FailedTests = failedTestList, TestRunSummary = summary };
 
             TestRun resultTestRun = null;
             this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
@@ -98,22 +83,17 @@ namespace Agent.Plugins.UnitTests
             this.testRunManager.Publish(testRun);
 
             this.diagnosticDataCollector.Verify(x => x.Warning("TestRunManger.ValidateAndPrepareForPublish : Failed test count does not match the Test summary."));
-            
-            Assert.AreEqual(testRun.PassedTests, resultTestRun.PassedTests);
-            Assert.AreEqual(null, resultTestRun.FailedTests);
-            Assert.AreEqual(this.validSummary, resultTestRun.TestRunSummary);
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Once);
+            this.VerifyTestRun(passedTestList, null, summary, resultTestRun);
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithMisMatchedPassedTestResultsAndTestSummaryShouldReturnTestRunWithPassedTestsCleared()
+        public void PublishForTestRunWithMismatchedPassedTestResultsAndTestSummaryShouldPublishTestRunWithPassedTestsCleared()
         {
-            TestResult passedTest = new TestResult() { Name = "Test1", Outcome = TestOutcome.Passed };
-            TestResult failedTest = new TestResult() { Name = "FailingTest", Outcome = TestOutcome.Failed };
-
-            TestRun testRun = new TestRun();
-            testRun.TestRunSummary = this.validSummary;
-            testRun.PassedTests = new List<TestResult>() { passedTest };
-            testRun.FailedTests = new List<TestResult>() { failedTest };
+            var passedTestList = this.CreateTestList(1, TestOutcome.Passed);
+            var failedTestList = this.CreateTestList(1, TestOutcome.Failed);
+            var summary = this.CreateTestRunSummary(4, 2, 1);
+            TestRun testRun = new TestRun { PassedTests = passedTestList, FailedTests = failedTestList, TestRunSummary = summary };
 
             TestRun resultTestRun = null;
             this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
@@ -121,50 +101,70 @@ namespace Agent.Plugins.UnitTests
             this.testRunManager.Publish(testRun);
 
             this.diagnosticDataCollector.Verify(x => x.Warning("TestRunManger.ValidateAndPrepareForPublish : Passed test count does not match the Test summary."));
-
-            Assert.AreEqual(null, resultTestRun.PassedTests);
-            Assert.AreEqual(testRun.FailedTests, resultTestRun.FailedTests);
-            Assert.AreEqual(this.validSummary, resultTestRun.TestRunSummary);
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Once);
+            this.VerifyTestRun(null, failedTestList, summary, resultTestRun);
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithNoFailedTestResultsAndTestSummaryContainingFailuresShouldReturnTestRunWithFailedTestsCleared()
+        public void PublishForTestRunWithNoFailedTestResultsAndTestSummaryContainingFailuresShouldPublishTestRunWithFailedTestsCleared()
         {
-            TestResult passedTest = new TestResult() { Name = "Test1", Outcome = TestOutcome.Passed };
-            TestResult passedTest2 = new TestResult() { Name = "Test2", Outcome = TestOutcome.Passed };
+            var passedTestList = this.CreateTestList(2, TestOutcome.Passed);
 
-            TestRun testRun = new TestRun();
-            testRun.TestRunSummary = this.validSummary;
-            testRun.PassedTests = new List<TestResult>() { passedTest, passedTest2 };
+            var summary = this.CreateTestRunSummary(4, 2, 1);
+            TestRun testRun = new TestRun { PassedTests = passedTestList, TestRunSummary = summary };
 
             TestRun resultTestRun = null;
             this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
 
             this.testRunManager.Publish(testRun);
 
-            Assert.AreEqual(testRun.PassedTests, resultTestRun.PassedTests);
-            Assert.AreEqual(null, resultTestRun.FailedTests);
-            Assert.AreEqual(this.validSummary, resultTestRun.TestRunSummary);
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Once);
+            this.VerifyTestRun(passedTestList, null, summary, resultTestRun);
         }
 
         [TestMethod]
-        public void ResolveForTestRunWithValidTestResultsAndTestSummaryShouldReturnTestRun()
+        public void PublishForTestRunWithValidTestResultsAndTestSummaryShouldPublishTestRun()
         {
-            TestResult passedTest = new TestResult() { Name = "Test1", Outcome = TestOutcome.Passed };
-            TestResult passedTest2 = new TestResult() { Name = "Test2", Outcome = TestOutcome.Passed };
-            TestResult failedTest = new TestResult() { Name = "FailingTest", Outcome = TestOutcome.Failed };
-
-            TestRun testRun = new TestRun();
-            testRun.PassedTests = new List<TestResult>() { passedTest, passedTest2 };
-            testRun.FailedTests = new List<TestResult>() { failedTest };
-            testRun.TestRunSummary = this.validSummary;
+            var passedTestList = this.CreateTestList(2, TestOutcome.Passed);
+            var failedTestList = this.CreateTestList(1, TestOutcome.Failed);
+            var summary = this.CreateTestRunSummary(4, 2, 1);
+            TestRun testRun = new TestRun { PassedTests = passedTestList, FailedTests = failedTestList, TestRunSummary = summary };
 
             TestRun resultTestRun = null;
             this.publisher.Setup(x => x.Publish(It.IsAny<TestRun>())).Callback((TestRun t) => resultTestRun = t);
 
             this.testRunManager.Publish(testRun);
 
-            Assert.AreEqual(testRun, resultTestRun);
+            this.publisher.Verify(x => x.Publish(It.IsAny<TestRun>()), Times.Once);
+            this.VerifyTestRun(passedTestList, failedTestList, summary, resultTestRun);
+        }
+
+        private TestRunSummary CreateTestRunSummary(int totalTests, int totalPassed, int totalFailed)
+        {
+            return new TestRunSummary
+            {
+                TotalTests = totalTests,
+                TotalPassed = totalPassed,
+                TotalFailed = totalFailed,
+                TotalExecutionTime = new System.TimeSpan(0, 0, 0, 1, 50)
+            };
+        }
+
+        private List<TestResult> CreateTestList(int numberOfTests, TestOutcome outcome)
+        {
+            var testList = new List<TestResult>();
+            for (int i = 1; i <= numberOfTests; i++)
+            {
+                testList.Add(new TestResult { Name = outcome.ToString() + i, Outcome = outcome });
+            }
+            return testList;
+        }
+
+        private void VerifyTestRun(IEnumerable<TestResult> expectedPassed, IEnumerable<TestResult> expectedFailed, TestRunSummary expectedSummary, TestRun testRun)
+        {
+            Assert.AreEqual(expectedPassed, testRun.PassedTests);
+            Assert.AreEqual(expectedFailed, testRun.FailedTests);
+            Assert.AreEqual(expectedSummary, testRun.TestRunSummary);
         }
     }
 }
