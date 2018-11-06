@@ -11,17 +11,17 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Total number of tests that are part of the run
         /// </summary>
-        public long TotalTests { get; set; }
+        public int TotalTests { get; set; }
 
         /// <summary>
         /// Total number of tests that failed
         /// </summary>
-        public long TotalFailed { get; set; }
+        public int TotalFailed { get; set; }
 
         /// <summary>
         /// Total number of tests that were passed
         /// </summary>
-        public long TotalPassed { get; set; }
+        public int TotalPassed { get; set; }
 
         /// <summary>
         /// Total execution time
