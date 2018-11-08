@@ -8,7 +8,7 @@
 
     public class MochaTestResultParser : ITestResultParser
     {
-        public TestRun TestRun = new TestRun { TestResults = new Collection<TestResult>() };
+        public TestRun TestRun = new TestRun { };
 
         /// <inheritdoc/>
         public void Parse(LogLineData testResultsLine)
