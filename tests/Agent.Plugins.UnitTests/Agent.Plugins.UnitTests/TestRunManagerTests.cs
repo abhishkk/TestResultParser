@@ -160,11 +160,17 @@ namespace Agent.Plugins.UnitTests
             return testList;
         }
 
-        private void VerifyTestRun(IEnumerable<TestResult> expectedPassed, IEnumerable<TestResult> expectedFailed, TestRunSummary expectedSummary, TestRun testRun)
+        private void VerifyTestRun(List<TestResult> expectedPassed, List<TestResult> expectedFailed, TestRunSummary expectedSummary, TestRun testRun)
         {
             Assert.AreEqual(expectedPassed, testRun.PassedTests);
             Assert.AreEqual(expectedFailed, testRun.FailedTests);
             Assert.AreEqual(expectedSummary, testRun.TestRunSummary);
+
+            if (expectedSummary != null)
+            {
+                if (expectedPassed != null) Assert.AreEqual(expectedSummary.TotalPassed, testRun.PassedTests.Count);
+                if (expectedFailed != null) Assert.AreEqual(expectedSummary.TotalFailed, testRun.FailedTests.Count);
+            }
         }
     }
 }

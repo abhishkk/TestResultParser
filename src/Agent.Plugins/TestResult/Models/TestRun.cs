@@ -13,12 +13,12 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Collection of passed tests
         /// </summary>
-        public IEnumerable<TestResult> PassedTests { get; set; }
+        public List<TestResult> PassedTests { get; set; }
 
         /// <summary>
         /// Collection of failed tests
         /// </summary>
-        public IEnumerable<TestResult> FailedTests { get; set; }
+        public List<TestResult> FailedTests { get; set; }
         
         /// <summary>
         /// Summary for the test run
