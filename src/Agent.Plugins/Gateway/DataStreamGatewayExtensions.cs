@@ -3,14 +3,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Agent.Plugins.TestResultParser.Gateway;
 using Agent.Plugins.TestResultParser.Parser;
-using Agent.Plugins.TestResultParser.Parser.Interfaces;
 using Agent.Plugins.TestResultParser.Parser.Models;
 
 namespace Agent.Plugins.TestResultParser.Bus
 {
     public static class DataStreamGatewayExtensions
     {
-        public static Task SendAsync(this DataStreamGateway bus, Stream message)
+        public static Task SendAsync(this DataStreamGateway bus, string message)
         {
             return bus.ProcessDataAsync(message);
         }

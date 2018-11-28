@@ -1,6 +1,6 @@
 ﻿using Agent.Plugins.TestResultParser.Parser.Models;
 
-namespace Agent.Plugins.TestResultParser.Parser.Interfaces
+namespace Agent.Plugins.TestResultParser.Parser
 {
     public interface ITestResultParser
     {

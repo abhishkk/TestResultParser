@@ -5,7 +5,6 @@ namespace Agent.Plugins.TestResultParser.ParserConfig
 {
     using System;
     using System.Collections.Generic;
-    using Agent.Plugins.TestResultParser.ParserConfig.Interfaces;
 
     class TestRunnerParserCache : ITestRunnerParserCache
     {

@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Agent.Plugins.TestResultParser.Loggers;
+using Agent.Plugins.TestResultParser.Publish;
+using Agent.Plugins.TestResultParser.Telemetry;
+using Agent.Plugins.TestResultParser.TestResult.Models;
+
 namespace Agent.Plugins.TestResultParser.TestRunManger
 {
-    using Agent.Plugins.TestResultParser.Loggers.Interfaces;
-    using Agent.Plugins.TestResultParser.Publish.Interfaces;
-    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-    using Agent.Plugins.TestResultParser.TestResult.Models;
-    using System.Linq;
 
     /// <inheritdoc/>
     public class TestRunManager : ITestRunManager
@@ -22,6 +22,8 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
         /// Construct the TestRunManger
         /// </summary>
         /// <param name="testRunPublisher"></param>
+        /// <param name="diagnosticDataCollector"></param>
+        /// <param name="telemetryDataCollector"></param>
         public TestRunManager(ITestRunPublisher testRunPublisher, ITraceLogger diagnosticDataCollector, ITelemetryDataCollector telemetryDataCollector)
         {
             this.publisher = testRunPublisher;
@@ -39,10 +41,9 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
             }
         }
 
-        /// <inheritdoc/>
         private TestRun ValidateAndPrepareForPublish(TestRun testRun)
         {
-            if (testRun == null || testRun.TestRunSummary == null)
+            if (testRun?.TestRunSummary == null)
             {
                 this.diagnosticDataCollector.Error("TestRunManger.ValidateAndPrepareForPublish : TestRun or TestRunSummary is null.");
                 return null;
@@ -56,14 +57,14 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
             }
 
             // Match the passed test count and clear the passed tests collection if mismatch occurs
-            if (testRun.TestRunSummary.TotalPassed != testRun.PassedTests?.Count())
+            if (testRun.TestRunSummary.TotalPassed != testRun.PassedTests?.Count)
             {
                 this.diagnosticDataCollector.Warning("TestRunManger.ValidateAndPrepareForPublish : Passed test count does not match the Test summary.");
                 testRun.PassedTests = null;
             }
 
             // Match the failed test count and clear the failed tests collection if mismatch occurs
-            if (testRun.TestRunSummary.TotalFailed != testRun.FailedTests?.Count())
+            if (testRun.TestRunSummary.TotalFailed != testRun.FailedTests?.Count)
             {
                 this.diagnosticDataCollector.Warning("TestRunManger.ValidateAndPrepareForPublish : Failed test count does not match the Test summary.");
                 testRun.FailedTests = null;

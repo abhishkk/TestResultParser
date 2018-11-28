@@ -1,19 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using Agent.Plugins.TestResultParser.Loggers;
+using Agent.Plugins.TestResultParser.Parser.Models;
+using Agent.Plugins.TestResultParser.Telemetry;
+using Agent.Plugins.TestResultParser.TestResult.Models;
+using Agent.Plugins.TestResultParser.TestRunManger;
+
 namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 {
-    using System;
-    using System.Collections.Generic;
-    using Agent.Plugins.TestResultParser.Loggers;
-    using Agent.Plugins.TestResultParser.Loggers.Interfaces;
-    using Agent.Plugins.TestResultParser.Parser.Interfaces;
-    using Agent.Plugins.TestResultParser.Parser.Models;
-    using Agent.Plugins.TestResultParser.Telemetry;
-    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
-    using Agent.Plugins.TestResultParser.TestResult.Models;
-    using Agent.Plugins.TestResultParser.TestRunManger;
-    using TestResult = TestResult.Models.TestResult;
 
     public class MochaTestResultParser : ITestResultParser
     {
@@ -249,14 +246,14 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
         /// <returns></returns>
         private bool MatchPassedTestCase(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.PassedTestCase.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.PassedTestCase.Match(testResultsLine.Message);
 
             if (!match.Success)
             {
                 return false;
             }
 
-            var testResult = new TestResult();
+            var testResult = new TestResult.Models.TestResult();
 
             testResult.Outcome = TestOutcome.Passed;
             testResult.Name = match.Groups[RegexCaptureGroups.TestCaseName].Value;
@@ -296,14 +293,14 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 
         private bool MatchFailedTestCase(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.FailedTestCase.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.FailedTestCase.Match(testResultsLine.Message);
 
             if (!match.Success)
             {
                 return false;
             }
 
-            var testResult = new TestResult();
+            var testResult = new TestResult.Models.TestResult();
 
             // Handling parse errors is unnecessary
             int.TryParse(match.Groups[RegexCaptureGroups.FailedTestCaseNumber].Value, out int testCaseNumber);
@@ -365,14 +362,14 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 
         private bool MatchPendingTestCase(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.PendingTestCase.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.PendingTestCase.Match(testResultsLine.Message);
 
             if (!match.Success)
             {
                 return false;
             }
 
-            var testResult = new TestResult();
+            var testResult = new TestResult.Models.TestResult();
 
             testResult.Outcome = TestOutcome.Skipped;
             testResult.Name = match.Groups[RegexCaptureGroups.TestCaseName].Value;
@@ -412,7 +409,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 
         private bool MatchPassedSummary(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.PassedTestsSummary.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.PassedTestsSummary.Match(testResultsLine.Message);
 
             if (!match.Success)
             {
@@ -498,7 +495,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 
         private bool MatchFailedSummary(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.FailedTestsSummary.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.FailedTestsSummary.Match(testResultsLine.Message);
 
             if (!match.Success)
             {
@@ -533,7 +530,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 
         private bool MatchPendingSummary(LogData testResultsLine)
         {
-            var match = MochaTestResultParserRegexes.PendingTestsSummary.Match(testResultsLine.Line);
+            var match = MochaTestResultParserRegexes.PendingTestsSummary.Match(testResultsLine.Message);
 
             if (!match.Success)
             {

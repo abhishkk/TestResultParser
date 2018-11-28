@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Agent.Plugins.TestResultParser.Bus;
-using Agent.Plugins.TestResultParser.Bus.Interfaces;
-using Agent.Plugins.TestResultParser.Gateway.Interfaces;
-using Agent.Plugins.TestResultParser.Parser;
 using Agent.Plugins.TestResultParser.Parser.Models;
-using Agent.Plugins.TestResultParser.Parser.Node.Mocha;
-using Agent.Plugins.TestResultParser.TestRunManger;
 
 namespace Agent.Plugins.TestResultParser.Gateway
 {
@@ -19,26 +12,18 @@ namespace Agent.Plugins.TestResultParser.Gateway
     {
         public void Initialize()
         {
-            //var t = new MochaTestResultParser(new TestRunManager());
-            //Subscribe(t.Parse);
-
             throw new NotImplementedException();
         }
 
-        public async Task ProcessDataAsync(Stream stream)
+        public async Task ProcessDataAsync(string data)
         {
-            //TODO string or stream?
-
-            // Process line
-            const int bufferSize = 1024;
-            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, bufferSize))
+            var logData = new LogData
             {
-                LogData logLine =  new LogData();
-                while ((logLine.Line = streamReader.ReadLine()) != null)
-                {
-                    await _broadcast.SendAsync(logLine);
-                }
-            }
+                Message = data,
+                LineNumber = ++_counter
+            };
+
+            await _broadcast.SendAsync(logData);
         }
 
         public void Complete()
@@ -74,5 +59,6 @@ namespace Agent.Plugins.TestResultParser.Gateway
 
         private readonly BroadcastBlock<LogData> _broadcast = new BroadcastBlock<LogData>(message => message);
         private readonly ConcurrentDictionary<Guid, ITargetBlock<LogData>> _subscribers = new ConcurrentDictionary<Guid, ITargetBlock<LogData>>();
+        private int _counter;
     }
 }

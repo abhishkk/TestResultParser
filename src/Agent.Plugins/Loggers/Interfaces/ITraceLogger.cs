@@ -1,4 +1,4 @@
-﻿namespace Agent.Plugins.TestResultParser.Loggers.Interfaces
+﻿namespace Agent.Plugins.TestResultParser.Loggers
 {
     public interface ITraceLogger
     {

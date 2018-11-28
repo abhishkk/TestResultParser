@@ -4,7 +4,7 @@
 namespace Agent.Plugins.TestResultParser.Telemetry
 {
     using System;
-    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
+    using Agent.Plugins.TestResultParser.Telemetry;
 
     public class TelemetryDataCollector : ITelemetryDataCollector
     {

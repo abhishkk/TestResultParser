@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Agent.Plugins.TestResultParser.TestResult.Models;
-using Agent.Plugins.TestResultParser.TestResult.Models.Interfaces;
 
-namespace Agent.Plugins.TestResultParser.Gateway.Interfaces
+namespace Agent.Plugins.TestResultParser.Gateway
 {
     interface ITestReportingGateway
     {

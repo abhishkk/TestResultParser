@@ -6,11 +6,8 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
     using System;
     using System.Collections.Generic;
     using Agent.Plugins.TestResultParser.Loggers;
-    using Agent.Plugins.TestResultParser.Loggers.Interfaces;
-    using Agent.Plugins.TestResultParser.Parser.Interfaces;
     using Agent.Plugins.TestResultParser.Parser.Models;
     using Agent.Plugins.TestResultParser.Telemetry;
-    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
     using Agent.Plugins.TestResultParser.TestResult.Models;
     using Agent.Plugins.TestResultParser.TestRunManger;
     using TestResult = TestResult.Models.TestResult;
@@ -66,7 +63,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         public void Parse(LogData logData)
         {
             // Validate data input
-            if (!this.IsValidInput(logData.Line) || string.IsNullOrWhiteSpace(logData.Line)) return;
+            if (!this.IsValidInput(logData.Message) || string.IsNullOrWhiteSpace(logData.Message)) return;
 
             try
             {
@@ -131,7 +128,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
             }
             catch(Exception ex)
             {
-                this.logger.Error($"PythonTestResultParser.Parse : Unable to parse the log line {logData.Line} with exception {ex.ToString()}");
+                this.logger.Error($"PythonTestResultParser.Parse : Unable to parse the log line {logData.Message} with exception {ex.ToString()}");
                 this.telemetryDataCollector.AddToCumulativeTelemtery(TelemetryConstants.EventArea, TelemetryConstants.ParseException, ex.Message);
 
                 Reset();
@@ -161,7 +158,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         
         private bool TryParseTestResult(LogData logData)
         {
-            var resultMatch = PythonRegularExpressions.TestResult.Match(logData.Line);
+            var resultMatch = PythonRegularExpressions.TestResult.Match(logData.Message);
  
             if (!resultMatch.Success)
             {
@@ -202,7 +199,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
 
         private bool TryParseForPartialResult(LogData logData)
         {
-            var partialResultMatch = PythonRegularExpressions.PassedOutcome.Match(logData.Line);
+            var partialResultMatch = PythonRegularExpressions.PassedOutcome.Match(logData.Message);
             if (partialResultMatch.Success)
             {
                 this.partialTestResult.Outcome = TestOutcome.Passed;
@@ -215,7 +212,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         private bool TryParseForFailedResult(LogData logData)
         {
             // Parse
-            var failedResultMatch = PythonRegularExpressions.FailedResult.Match(logData.Line);
+            var failedResultMatch = PythonRegularExpressions.FailedResult.Match(logData.Message);
             if (!failedResultMatch.Success) { return false; }
 
             // Set result name.
@@ -233,7 +230,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
         {
             if (string.IsNullOrWhiteSpace(testResultNameIdentifier))
             {
-                this.logger.Verbose($"Test result name is null or whitespace in logData: {logData.Line}");
+                this.logger.Verbose($"Test result name is null or whitespace in logData: {logData.Message}");
                 return null;
             }
 
@@ -242,7 +239,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
 
         private bool TryParseSummaryTestAndTime(LogData logData)
         {
-            var countAndTimeSummaryMatch = PythonRegularExpressions.TestCountAndTimeSummary.Match(logData.Line);
+            var countAndTimeSummaryMatch = PythonRegularExpressions.TestCountAndTimeSummary.Match(logData.Message);
             if (countAndTimeSummaryMatch.Success)
             {
                 var testcount = int.Parse(countAndTimeSummaryMatch.Groups[RegexCaptureGroups.TotalTests].Value);
@@ -271,7 +268,7 @@ namespace Agent.Plugins.TestResultParser.Parser.Python
                 return false;
             }
 
-            var resultSummaryMatch = PythonRegularExpressions.TestOutcomeSummary.Match(logData.Line);
+            var resultSummaryMatch = PythonRegularExpressions.TestOutcomeSummary.Match(logData.Message);
             if (resultSummaryMatch.Success)
             {
                 var resultIdentifer = resultSummaryMatch.Groups[RegexCaptureGroups.TestOutcome].Value;

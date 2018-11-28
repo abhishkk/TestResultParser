@@ -2,7 +2,6 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Agent.Plugins.TestResultParser.Loggers.Interfaces;
 
     public class TraceLogger : ITraceLogger
     {

@@ -4,7 +4,6 @@
 namespace Agent.Plugins.TestResultParser.ParserConfig
 {
     using System;
-    using Agent.Plugins.TestResultParser.ParserConfig.Interfaces;
 
     class TestRunnerParserConfiguration : ITestRunnerParserConfiguration
     {

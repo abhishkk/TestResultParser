@@ -4,4 +4,19 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Agent.Sdk">
+      <HintPath>..\..\..\azure-pipelines-agent\_layout\bin\Agent.Sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.DistributedTask.WebApi">
+      <HintPath>..\..\..\azure-pipelines-agent\_layout\bin\Microsoft.TeamFoundation.DistributedTask.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.TestManagement.WebApi">
+      <HintPath>..\..\..\azure-pipelines-agent\_layout\bin\Microsoft.TeamFoundation.TestManagement.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.WebApi">
+      <HintPath>..\..\..\azure-pipelines-agent\_layout\bin\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Agent.Plugins.TestResultParser.ParserConfig.Interfaces
+namespace Agent.Plugins.TestResultParser.ParserConfig
 {
     interface ITestRunnerParserCache
     {

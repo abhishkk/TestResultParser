@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Agent.Plugins.TestResultParser.Loggers;
+using Agent.Plugins.TestResultParser.Parser;
+using Agent.Plugins.TestResultParser.Telemetry;
+
 namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
-    using Agent.Plugins.TestResultParser.Loggers.Interfaces;
-    using Agent.Plugins.TestResultParser.Parser.Interfaces;
     using Agent.Plugins.TestResultParser.Parser.Models;
-    using Agent.Plugins.TestResultParser.Telemetry.Interfaces;
     using Agent.Plugins.TestResultParser.TestResult.Models;
     using Agent.Plugins.TestResultParser.TestRunManger;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -112,7 +113,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
             int lineNumber = 0;
             foreach (var line in testResultsConsoleOut)
             {
-                yield return new LogData() { Line = RemoveTimeStampFromLogLineIfPresent(line), LineNumber = lineNumber++ };
+                yield return new LogData() { Message = RemoveTimeStampFromLogLineIfPresent(line), LineNumber = lineNumber++ };
             }
         }
 
