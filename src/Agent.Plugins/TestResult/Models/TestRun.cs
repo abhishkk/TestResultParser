@@ -44,6 +44,6 @@ namespace Agent.Plugins.TestResultParser.TestResult.Models
         /// <summary>
         /// Summary for the test run
         /// </summary>
-        public TestRunSummary TestRunSummary { get; set; }
+        public TestRunSummary TestRunSummary { get; set; } = new TestRunSummary();
     }
 }

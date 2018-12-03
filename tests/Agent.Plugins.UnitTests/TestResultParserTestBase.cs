@@ -109,7 +109,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
         public IEnumerable<LogData> GetLines(string testCase)
         {
             var testResultsConsoleOut = File.ReadAllLines($"{testCase}.txt");
-            int lineNumber = 0;
+            int lineNumber = 1;
             foreach (var line in testResultsConsoleOut)
             {
                 yield return new LogData() { Line = RemoveTimeStampFromLogLineIfPresent(line), LineNumber = lineNumber++ };

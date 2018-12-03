@@ -1,20 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using System.IO;
+using Agent.Plugins.TestResultParser.Parser.Node.Mocha;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using Agent.Plugins.TestResultParser.Parser.Node.Mocha;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     [TestClass]
     public class MochaTestResultParserTests : TestResultParserTestBase
     {
         [TestInitialize]
         public void TestInit()
         {
-            this.parser = new MochaTestResultParser(testRunManagerMock.Object, diagnosticDataCollector.Object, telemetryDataCollector.Object);
+            this.parser = new MochaTestResultParser(this.testRunManagerMock.Object, this.diagnosticDataCollector.Object, this.telemetryDataCollector.Object);
         }
 
         #region DataDrivenTests
