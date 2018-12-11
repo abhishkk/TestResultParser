@@ -6,9 +6,9 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
     using System.Text.RegularExpressions;
 
     // TODO: Check if logs come prepended with the time stamp and if so have a definitive regex to ignore them to tighten the patterns
-    // TODO: Check if merging all or most of the regexes into a single one gives a perf boost
+    // TODO: Check if merging all or most of the Regexs into a single one gives a perf boost
     // TODO: Verify if tabs (/t) will come from the agent logs
-    public class MochaTestResultParserRegexes
+    public class MochaTestResultParserRegexs
     {
         /// <summary>
         /// Matches lines with the following regex:

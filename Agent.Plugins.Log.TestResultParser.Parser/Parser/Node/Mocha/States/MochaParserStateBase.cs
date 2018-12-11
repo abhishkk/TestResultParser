@@ -8,7 +8,6 @@ using Agent.Plugins.Log.TestResultParser.Contracts;
 
 namespace Agent.Plugins.Log.TestResultParser.Parser
 {
-
     /// <summary>
     /// Base class for a mocha test result parser state
     /// Has common methods that each state will need to use
@@ -20,7 +19,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
         protected ParserResetAndAttemptPublish attemptPublishAndResetParser;
 
         /// <summary>
-        /// List of regexes and their corresponding post successful match actions
+        /// List of Regexs and their corresponding post successful match actions
         /// </summary>
         public virtual IEnumerable<RegexActionPair> RegexsToMatch => throw new NotImplementedException();
 
@@ -57,7 +56,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
         /// </summary>
         /// <param name="match">Passed summary match object</param>
         /// <param name="mochaStateContext"></param>
-        protected void ExtractTestRunTime(Match match, MochaTestResultParserStateContext mochaStateContext)
+        protected void ExtractTestRunTime(Match match, MochaParserStateContext mochaStateContext)
         {
             // Handling parse errors is unnecessary
             var timeTaken = long.Parse(match.Groups[RegexCaptureGroups.TestRunTime].Value);

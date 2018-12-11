@@ -7,7 +7,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
 {
     public class MochaTestResultParserStateContext : TestResultParserStateContext
     {
-        public MochaTestResultParserStateContext(TestRun testRun)
+        public MochaTestResultParserStateContext(TestRun testRun) : base(testRun)
         {
             Initialize(testRun);
         }
@@ -48,7 +48,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
         /// <summary>
         /// Initializes all the values to their defaults
         /// </summary>
-        public sealed override void Initialize(TestRun testRun)
+        public new void Initialize(TestRun testRun)
         {
             StackTracesToSkipParsingPostSummary = 0;
             LastFailedTestCaseNumber = 0;

@@ -1,8 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,26 +18,15 @@
     <Content Include="PythonTestResultParserTests\Resources\**\*.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase013.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase013Result.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase014.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase014Result.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase015.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase015Result.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase016.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase016Result.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase017.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase017Result.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase018.txt" />
-    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase018Result.txt" />
+    <Content Include="JestTestResultParserTests\Resources\**\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Agent.Plugins.Log.TestResultParser.Contracts\Agent.Plugins.Log.TestResultParser.Contracts.csproj" />
     <ProjectReference Include="..\Agent.Plugins.Log.TestResultParser.Parser\Agent.Plugins.Log.TestResultParser.Parser.csproj" />
   </ItemGroup>
-  
+
 </Project>
+

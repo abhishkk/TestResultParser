@@ -3,7 +3,7 @@
 
 namespace Agent.Plugins.Log.TestResultParser.Parser
 {
-    public enum MochaTestResultParserStates
+    public enum MochaParserStates
     {
         ExpectingTestResults,
         ExpectingTestRunSummary,

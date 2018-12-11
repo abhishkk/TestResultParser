@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Collections.Generic;
 
 namespace Agent.Plugins.Log.TestResultParser.Contracts
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Contains the Test results and Test Summary for the Test run
     /// </summary>
@@ -44,6 +43,6 @@ namespace Agent.Plugins.Log.TestResultParser.Contracts
         /// <summary>
         /// Summary for the test run
         /// </summary>
-        public TestRunSummary TestRunSummary { get; set; }
+        public TestRunSummary TestRunSummary { get; set; } = new TestRunSummary();
     }
 }

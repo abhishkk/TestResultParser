@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 using Agent.Plugins.Log.TestResultParser.Contracts;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
-namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
+namespace Agent.Plugins.UnitTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text.RegularExpressions;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
+
     public abstract class TestResultParserTestBase
     {
         protected Mock<ITraceLogger> diagnosticDataCollector;
@@ -34,7 +35,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
             telemetryDataCollector = new Mock<ITelemetryDataCollector>();
         }
 
-        public void TestSuccessScenariosWithBasicAssertions(string testCase)
+        public void TestSuccessScenariosWithBasicAssertions(string testCase, bool assertOnlyFailedCount = false)
         {
             int indexOfTestRun = 0;
             int lastTestRunId = 0;
@@ -42,17 +43,21 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
             
             testRunManagerMock.Setup(x => x.PublishAsync(It.IsAny<TestRun>())).Callback<TestRun>(testRun =>
             {
-                ValidateTestRun(testRun, resultFileContents, indexOfTestRun++, lastTestRunId);
+                ValidateTestRun(testRun, resultFileContents, indexOfTestRun++, lastTestRunId, assertOnlyFailedCount);
                 lastTestRunId = testRun.TestRunId;
             });
 
             foreach (var line in GetLines(testCase))
             {
+                // Uncomment the below to break at a particular line
+                //if (line.Line == "Summary of all failing tests")
+                //{
+                //}
+
                 this.parser.Parse(line);
             }
 
-            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Exactly(resultFileContents.Length / 4), $"Expected {resultFileContents.Length / 4 } test runs.");
-            Assert.AreEqual(resultFileContents.Length / 5, indexOfTestRun, $"Expected {resultFileContents.Length / 4} test runs.");
+            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Exactly(Math.Max(1, resultFileContents.Length / 5)), $"Expected {Math.Max(1, resultFileContents.Length / 5)} test runs.");
         }
 
         public void TestPartialSuccessScenariosWithBasicAssertions(string testCase)
@@ -72,6 +77,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
                 this.parser.Parse(line);
             }
 
+            // TODO: fix assertions
             testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Exactly(resultFileContents.Length / 7), $"Expected {resultFileContents.Length / 7 } test runs.");
             Assert.AreEqual(resultFileContents.Length / 8, indexOfTestRun, $"Expected {resultFileContents.Length / 7} test runs.");
         }
@@ -90,7 +96,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
                 this.parser.Parse(line);
             }
 
-            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Once, $"Expected a test run to have been published.");
+            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Once, $"Expected a test run to have been PublishAsynced.");
         }
 
         public void TestNegativeTestsScenarios(string testCase)
@@ -100,8 +106,25 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
                 this.parser.Parse(line);
             }
 
-            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Never, $"Expected no test run to have been published.");
+            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Never, $"Expected no test run to have been PublishAsynced.");
         }
+
+        #region Data Drivers
+
+        public static IEnumerable<object[]> GetTestCasesFromRelativePath(string relativePathToTestCase)
+        {
+            foreach (var testCase in new DirectoryInfo(relativePathToTestCase).GetFiles("TestCase*.txt"))
+            {
+                if (!testCase.Name.EndsWith("Result.txt"))
+                {
+                    // Uncomment the below line to run for a particular test case for debugging 
+                    //if (testCase.Name.Contains("TestCase004"))
+                    yield return new object[] { testCase.Name.Split(".txt")[0] };
+                }
+            }
+        }
+
+        #endregion
 
         #region Log Data Utilities
 
@@ -115,18 +138,6 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
             }
         }
 
-        public static IEnumerable<object[]> GetTestCasesFromRelativePath(string relativePathToTestCase)
-        {
-            foreach (var testCase in new DirectoryInfo(relativePathToTestCase).GetFiles("TestCase*.txt"))
-            {
-                if (!testCase.Name.EndsWith("Result.txt"))
-                {
-                    // Uncomment the below line to run for a particular test case for debugging 
-                    // if (testCase.Name.Contains("TestCase002"))
-                    yield return new object[] { testCase.FullName.Split(".txt")[0] };
-                }
-            }
-        }
         public string RemoveTimeStampFromLogLineIfPresent(string line)
         {
             // Remove the preceding timestamp if present.
@@ -145,7 +156,8 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 
         #region ValidationHelpers
 
-        public void ValidateTestRun(TestRun testRun, string[] resultFileContents, int indexOfTestRun, int lastTestRunId)
+        public void ValidateTestRun(TestRun testRun, string[] resultFileContents, int indexOfTestRun,
+            int lastTestRunId, bool assertOnlyFailedCount = false)
         {
             int i = indexOfTestRun * 5;
 
@@ -157,12 +169,15 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 
             Assert.AreEqual(expectedPassedTestsCount, testRun.TestRunSummary.TotalPassed, "Passed tests summary does not match.");
             Assert.AreEqual(expectedFailedTestsCount, testRun.TestRunSummary.TotalFailed, "Failed tests summary does not match.");
-            Assert.AreEqual(expectedSkippedTestsCount, testRun.TestRunSummary.TotalSkipped, "NotExecuted tests summary does not match.");
+            Assert.AreEqual(expectedSkippedTestsCount, testRun.TestRunSummary.TotalSkipped, "Skipped tests summary does not match.");
             Assert.AreEqual(expectedTotalTestsCount, testRun.TestRunSummary.TotalTests, "Total tests summary does not match.");
 
-            Assert.AreEqual(expectedPassedTestsCount, testRun.PassedTests.Count, "Passed tests count does not match.");
+            if (!assertOnlyFailedCount)
+            {
+                Assert.AreEqual(expectedPassedTestsCount, testRun.PassedTests.Count, "Passed tests count does not match.");
+                Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "Skipped tests count does not match.");
+            }
             Assert.AreEqual(expectedFailedTestsCount, testRun.FailedTests.Count, "Failed tests count does not match.");
-            Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "NotExecuted tests count does not match.");
 
             Assert.IsTrue(testRun.TestRunId > lastTestRunId, $"Expected test run id greater than {lastTestRunId} but found {testRun.TestRunId} instead.");
             Assert.AreEqual(expectedTestRunDuration, testRun.TestRunSummary.TotalExecutionTime.TotalMilliseconds, "Test run duration did not match.");
@@ -183,12 +198,12 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 
             Assert.AreEqual(expectedPassedTestsSummaryCount, testRun.TestRunSummary.TotalPassed, "Passed tests summary does not match.");
             Assert.AreEqual(expectedFailedTestsSummary, testRun.TestRunSummary.TotalFailed, "Failed tests summary does not match.");
-            Assert.AreEqual(expectedSkippedTestsSummaryCount, testRun.TestRunSummary.TotalSkipped, "NotExecuted tests summary does not match.");
+            Assert.AreEqual(expectedSkippedTestsSummaryCount, testRun.TestRunSummary.TotalSkipped, "Skipped tests summary does not match.");
             Assert.AreEqual(expectedTotalTestsCount, testRun.TestRunSummary.TotalTests, "Total tests summary does not match.");
 
             Assert.AreEqual(expectedPassedTestsCount, testRun.PassedTests.Count, "Passed tests count does not match.");
             Assert.AreEqual(expectedFailedTestsCount, testRun.FailedTests.Count, "Failed tests count does not match.");
-            Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "NotExecuted tests count does not match.");
+            Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "Skipped tests count does not match.");
 
             Assert.IsTrue(testRun.TestRunId > lastTestRunId, $"Expected test run id greater than {lastTestRunId} but found {testRun.TestRunId} instead.");
             Assert.AreEqual(expectedTestRunDuration, testRun.TestRunSummary.TotalExecutionTime.TotalMilliseconds, "Test run duration did not match.");
@@ -220,7 +235,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
             int expectedSkippedTestsCount = int.Parse(resultFileContents[currentLine].Split(" ")[1]);
             currentLine++;
 
-            Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "NotExecuted tests count does not match.");
+            Assert.AreEqual(expectedSkippedTestsCount, testRun.SkippedTests.Count, "Skipped tests count does not match.");
             for (int testIndex = 0; testIndex < expectedSkippedTestsCount; currentLine++, testIndex++)
             {
                 Assert.AreEqual(resultFileContents[currentLine], testRun.SkippedTests[testIndex].Name, "Test Case name does not match.");

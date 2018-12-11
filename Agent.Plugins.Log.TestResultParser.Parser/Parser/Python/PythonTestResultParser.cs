@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Agent.Plugins.Log.TestResultParser.Contracts;
-using TelemetryConstants = Agent.Plugins.Log.TestResultParser.Parser.PythonTelemetryConstants;
 
 namespace Agent.Plugins.Log.TestResultParser.Parser
 {
@@ -28,7 +27,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
         public PythonTestResultParser(ITestRunManager testRunManager, ITraceLogger logger, ITelemetryDataCollector telemetry) : base(testRunManager, logger, telemetry)
         {
             base.logger.Info("PythonTestResultParser : Starting python test result parser.");
-            base.telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.Initialize, true);
+            base.telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.Initialize, true);
 
             this.state = ParserState.ExpectingTestResults;
             this.currentTestRun = new TestRun($"{Name}/{Version}", this.currentTestRunId);
@@ -78,7 +77,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
                         if (TryParseTestResult(logData))
                         {
                             logger.Error("PythonTestResultParser:Parse Expecting failed result or summary but found new test result.");
-                            telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.SummaryOrFailedTestsNotFound, new List<int> { this.currentTestRunId }, true);
+                            telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.SummaryOrFailedTestsNotFound, new List<int> { this.currentTestRunId }, true);
                             Reset();
                             Parse(logData);
                         }
@@ -107,7 +106,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             catch (Exception ex)
             {
                 logger.Error($"PythonTestResultParser.Parse : Unable to parse the log line {logData.Message} with exception {ex.ToString()}");
-                telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.ParseException, ex.Message);
+                telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.ParseException, ex.Message);
 
                 Reset();
             }
@@ -242,7 +241,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             {
                 // This is safe check, if must be true always because parsers will try to parse for Outcome if Test and Time Summary already parsed.
                 logger.Error("PythonTestResultParser:TryParseSummaryOutcome : TestRunSummary is null");
-                telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.TestRunSummaryCorrupted, new List<int> { this.currentTestRunId }, true);
+                telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.TestRunSummaryCorrupted, new List<int> { this.currentTestRunId }, true);
                 return false;
             }
 
@@ -276,7 +275,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             }
 
             logger.Error("PythonTestResultParser:TryParseSummaryOutcome : Expected match for SummaryTestOutcome was not found");
-            telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.TestOutcomeSummaryNotFound, new List<int> { this.currentTestRunId }, true);
+            telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.TestOutcomeSummaryNotFound, new List<int> { this.currentTestRunId }, true);
             return false;
         }
 
@@ -290,7 +289,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             if (data == null)
             {
                 logger.Error("PythonTestResultParser.IsValidInput : Received null data");
-                telemetry.AddToCumulativeTelemetry(TelemetryConstants.EventArea, TelemetryConstants.InvalidInput, new List<int> { this.currentTestRunId }, true);
+                telemetry.AddToCumulativeTelemetry(PythonTelemetryConstants.EventArea, PythonTelemetryConstants.InvalidInput, new List<int> { this.currentTestRunId }, true);
             }
 
             return data != null;
