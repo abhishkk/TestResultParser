@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0-preview-20181205-02" />
+    <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="MochaTestResultParserTests\Resources\**\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PythonTestResultParserTests\Resources\**\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase013.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase013Result.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase014.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase014Result.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase015.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase015Result.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase016.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase016Result.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase017.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase017Result.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase018.txt" />
+    <None Remove="MochaTestResultParserTests\Resources\PartialSuccess\TestCase018Result.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agent.Plugins.Log.TestResultParser.Contracts\Agent.Plugins.Log.TestResultParser.Contracts.csproj" />
+    <ProjectReference Include="..\Agent.Plugins.Log.TestResultParser.Parser\Agent.Plugins.Log.TestResultParser.Parser.csproj" />
+  </ItemGroup>
+  
+</Project>

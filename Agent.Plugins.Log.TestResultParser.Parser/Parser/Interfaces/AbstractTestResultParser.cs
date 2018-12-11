@@ -1,0 +1,23 @@
+﻿
+using Agent.Plugins.Log.TestResultParser.Contracts;
+
+namespace Agent.Plugins.Log.TestResultParser.Parser
+{
+    public abstract class AbstractTestResultParser : ITestResultParser
+    {
+        protected ITestRunManager testRunManager;
+        protected ITraceLogger logger;
+        protected ITelemetryDataCollector telemetry;
+
+        protected AbstractTestResultParser(ITestRunManager testRunManager, ITraceLogger traceLogger, ITelemetryDataCollector telemetryDataCollector)
+        {
+            this.testRunManager = testRunManager;
+            this.logger = traceLogger;
+            this.telemetry = telemetryDataCollector;
+        }
+
+        public abstract void Parse(LogData line);
+        public abstract string Name { get; }
+        public abstract string Version { get; }
+    }
+}
