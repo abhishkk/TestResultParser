@@ -6,6 +6,8 @@ using System.IO;
 using Agent.Plugins.TestResultParser.Parser.Node.Mocha;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+// TODO: Add test cases containing nested test suites
+
 namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
 {
     [TestClass]
@@ -23,6 +25,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
         [DynamicData(nameof(GetSuccessScenariosTestCases), DynamicDataSourceType.Method)]
         public void SuccessScenariosWithBasicAssertions(string testCase)
         {
+            testCase = Path.Combine("MochaTestResultParserTests", "Resources", "SuccessScenarios", testCase);
             TestSuccessScenariosWithBasicAssertions(testCase);
         }
 
@@ -30,6 +33,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
         [DynamicData(nameof(GetPartialSuccessTestCases), DynamicDataSourceType.Method)]
         public void PartialSuccessScenariosWithBasicAssertions(string testCase)
         {
+            testCase = Path.Combine("MochaTestResultParserTests", "Resources", "PartialSuccess", testCase);
             TestPartialSuccessScenariosWithBasicAssertions(testCase);
         }
 
@@ -37,6 +41,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
         [DynamicData(nameof(GetDetailedTestsTestCases), DynamicDataSourceType.Method)]
         public void DetailedAssertions(string testCase)
         {
+            testCase = Path.Combine("MochaTestResultParserTests", "Resources", "DetailedTests", testCase);
             TestWithDetailedAssertions(testCase);
         }
 
@@ -44,6 +49,7 @@ namespace Agent.Plugins.UnitTests.MochaTestResultParserTests
         [DynamicData(nameof(GetNegativeTestsTestCases), DynamicDataSourceType.Method)]
         public void NegativeTests(string testCase)
         {
+            testCase = Path.Combine("MochaTestResultParserTests", "Resources", "NegativeTests", testCase);
             TestNegativeTestsScenarios(testCase);
         }
 

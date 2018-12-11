@@ -68,8 +68,10 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
 
             this.diagnosticDataCollector.Info($"Attempting to publish test run with id {testRun.TestRunId} received from parser {testRun.ParserUri}.");
 
-            // Test run id should be non zero for a valid test run
-            if (testRun.TestRunId == 0)
+            // TODO: If total tests is 0, take a call on whether to publish or not
+
+            // Test run id should be positive and non zero for a valid test run
+            if (testRun.TestRunId <= 0)
             {
                 this.diagnosticDataCollector.Error("TestRunManger.ValidateAndPrepareForPublish : TestRunId was not set. Expected a non zero test run id.");
                 this.telemetryDataCollector.AddToCumulativeTelemtery(TelemetryConstants.EventArea, TelemetryConstants.TestRunIdZero, 1, true);
@@ -104,6 +106,7 @@ namespace Agent.Plugins.TestResultParser.TestRunManger
             // Match the skipped test count and clear the skipped tests collection if mismatch occurs
             if (testRun.TestRunSummary.TotalSkipped != testRun.SkippedTests?.Count())
             {
+                // Some frameworks such as Jest do not yield names of skipped test cases. Do we want to whitelist here?
                 this.diagnosticDataCollector.Warning("TestRunManger.ValidateAndPrepareForPublish : Skipped test count does not match the Test summary.");
                 this.telemetryDataCollector.AddToCumulativeTelemtery(TelemetryConstants.EventArea, TelemetryConstants.CountMismatch, 1, true);
                 testRun.SkippedTests = null;

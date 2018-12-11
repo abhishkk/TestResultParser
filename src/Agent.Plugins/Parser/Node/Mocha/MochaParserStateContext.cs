@@ -5,17 +5,12 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
 {
     using Agent.Plugins.TestResultParser.TestResult.Models;
 
-    public class MochaTestResultParserStateContext : TestResultParserStateContext
+    public class MochaParserStateContext : TestResultParserStateContext
     {
-        public MochaTestResultParserStateContext(TestRun testRun)
+        public MochaParserStateContext(TestRun testRun) : base(testRun)
         {
             Initialize(testRun);
         }
-
-        /// <summary>
-        /// Test run associted with the current iteration of the parser
-        /// </summary>
-        public TestRun TestRun { get; set; }
 
         /// <summary>
         /// This indicates the number of stack traces (they look exactly the same as a failed test case in mocha)
@@ -38,24 +33,18 @@ namespace Agent.Plugins.TestResultParser.Parser.Node.Mocha
         /// Hint string for logging and telemetry to specify what match was expected in case it does not occur
         /// in the expected number of lines
         /// </summary>
-        public string ExpectedMatch { get; set; }
-
-        /// <summary>
-        /// The current line number of the input console log line
-        /// </summary>
-        public int CurrentLineNumber { get; set; }
+        public string NextExpectedMatch { get; set; }
 
         /// <summary>
         /// Initializes all the values to their defaults
         /// </summary>
         public override void Initialize(TestRun testRun)
         {
+            base.Initialize(testRun);
             StackTracesToSkipParsingPostSummary = 0;
             LastFailedTestCaseNumber = 0;
             LinesWithinWhichMatchIsExpected = -1;
-            ExpectedMatch = null;
-            CurrentLineNumber = 0;
-            TestRun = testRun;
+            NextExpectedMatch = null;
         }
     }
 }
