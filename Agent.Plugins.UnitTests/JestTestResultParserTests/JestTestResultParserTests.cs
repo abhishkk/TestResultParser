@@ -20,13 +20,13 @@ namespace Agent.Plugins.UnitTests.JestTestResultParserTests
 
         #region DataDrivenTests
 
-        [DataTestMethod]
-        [DynamicData(nameof(GetSuccessScenariosTestCases), DynamicDataSourceType.Method)]
-        public void SuccessScenariosWithBasicAssertions(string testCase)
-        {
-            testCase = Path.Combine("JestTestResultParserTests", "Resources", "SuccessScenarios", testCase);
-            TestSuccessScenariosWithBasicAssertions(testCase, true);
-        }
+//        [DataTestMethod]
+//        [DynamicData(nameof(GetSuccessScenariosTestCases), DynamicDataSourceType.Method)]
+//        public void SuccessScenariosWithBasicAssertions(string testCase)
+//        {
+//            testCase = Path.Combine("JestTestResultParserTests", "Resources", "SuccessScenarios", testCase);
+//            TestSuccessScenariosWithBasicAssertions(testCase, true);
+//        }
 
         //[DataTestMethod]
         //[DynamicData(nameof(GetPartialSuccessTestCases), DynamicDataSourceType.Method)]
@@ -35,14 +35,14 @@ namespace Agent.Plugins.UnitTests.JestTestResultParserTests
         //    testCase = Path.Combine("JestTestResultParserTests", "Resources", "PartialSuccess", testCase);
         //    TestPartialSuccessScenariosWithBasicAssertions(testCase);
         //}
-
-        [DataTestMethod]
-        [DynamicData(nameof(GetDetailedTestsTestCases), DynamicDataSourceType.Method)]
-        public void DetailedAssertions(string testCase)
-        {
-            testCase = Path.Combine("JestTestResultParserTests", "Resources", "DetailedTests", testCase);
-            TestWithDetailedAssertions(testCase);
-        }
+//
+//        [DataTestMethod]
+//        [DynamicData(nameof(GetDetailedTestsTestCases), DynamicDataSourceType.Method)]
+//        public void DetailedAssertions(string testCase)
+//        {
+//            testCase = Path.Combine("JestTestResultParserTests", "Resources", "DetailedTests", testCase);
+//            TestWithDetailedAssertions(testCase);
+//        }
 
         //[DataTestMethod]
         //[DynamicData(nameof(GetNegativeTestsTestCases), DynamicDataSourceType.Method)]
