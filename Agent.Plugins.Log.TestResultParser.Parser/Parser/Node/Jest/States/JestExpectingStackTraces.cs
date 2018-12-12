@@ -1,17 +1,14 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Agent.Plugins.Log.TestResultParser.Contracts;
-
 namespace Agent.Plugins.Log.TestResultParser.Parser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
+    using Agent.Plugins.Log.TestResultParser.Contracts;
 
     public class JestExpectingStackTraces : JestParserStateBase
     {
         public override IEnumerable<RegexActionPair> RegexsToMatch { get; }
+
 
         /// <inheritdoc />
         public JestExpectingStackTraces(ParserResetAndAttemptPublish parserResetAndAttemptPublish, ITraceLogger logger, ITelemetryDataCollector telemetryDataCollector)
@@ -39,6 +36,8 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             
             // In non verbose mode console out appears as a failed test case
             // Only difference being it's not colored red
+            // Also this generally is the first "stack trace" hence this code is ideally
+            // not likely to be hit but keeping it here as safety check
             if (match.Groups[RegexCaptureGroups.TestCaseName].Value == "Console")
             {
                 logger.Verbose($"JestTestResultParser : ExpectingStackTraces: Ignoring apparent StackTrace/Failed test case at line " +
@@ -59,7 +58,8 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             jestStateContext.LinesWithinWhichMatchIsExpected = 1;
             jestStateContext.NextExpectedMatch = "tests summary";
 
-            logger.Info($"JestTestResultParser : ExpectingStackTraces : Transitioned to state ExpectingTestRunSummary.");
+            this.logger.Info($"JestTestResultParser : ExpectingStackTraces : Transitioned to state ExpectingTestRunSummary" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
 
             return JestParserStates.ExpectingTestRunSummary;
         }
@@ -75,8 +75,8 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
                 return JestParserStates.ExpectingStackTraces;
             }
 
-            // Do we want to use PASS/FAIL information here?
-            logger.Info($"JestTestResultParser : ExpectingStackTraces : Transitioned to state ExpectingTestResults.");
+            this.logger.Info($"JestTestResultParser : ExpectingStackTraces : Transitioned to state ExpectingTestResults" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
 
             return JestParserStates.ExpectingTestResults;
         }

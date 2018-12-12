@@ -1,13 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Agent.Plugins.Log.TestResultParser.Contracts;
-
-namespace Agent.Plugins.Log.TestResultParser.Parser
+﻿﻿namespace Agent.Plugins.Log.TestResultParser.Parser
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
+    using Agent.Plugins.Log.TestResultParser.Contracts;
+
     public class JestExpectingTestResults : JestParserStateBase
     {
         public override IEnumerable<RegexActionPair> RegexsToMatch { get; }
@@ -67,6 +64,9 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             var testResult = PrepareTestResult(TestOutcome.Failed, match);
             jestStateContext.TestRun.FailedTests.Add(testResult);
 
+            this.logger.Info($"JestTestResultParser : ExpectingTestResults : Transitioned to state ExpectingStackTraces" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
+
             return JestParserStates.ExpectingStackTraces;
         }
 
@@ -77,23 +77,25 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             jestStateContext.LinesWithinWhichMatchIsExpected = 1;
             jestStateContext.NextExpectedMatch = "tests summary";
 
+            this.logger.Info($"JestTestResultParser : ExpectingTestResults : Transitioned to state ExpectingTestRunSummary" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
+
             return JestParserStates.ExpectingTestRunSummary;
         }
 
         private Enum TestRunStartMatched(Match match, TestResultParserStateContext stateContext)
         {
             var jestStateContext = stateContext as JestParserStateContext;
-
-            // Do we want to use PASS/FAIL information here?
-
             return JestParserStates.ExpectingTestResults;
         }
 
         private Enum FailedTestsSummaryIndicatorMatched(Match match, TestResultParserStateContext stateContext)
         {
             var jestStateContext = stateContext as JestParserStateContext;
-
             jestStateContext.FailedTestsSummaryIndicatorEncountered = true;
+
+            this.logger.Info($"JestTestResultParser : ExpectingTestResults : Transitioned to state ExpectingStackTraces" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
 
             return JestParserStates.ExpectingStackTraces;
         }

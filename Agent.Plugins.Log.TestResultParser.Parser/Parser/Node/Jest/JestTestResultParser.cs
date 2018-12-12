@@ -186,7 +186,7 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
                 telemetry.AddToCumulativeTelemetry(JestTelemetryConstants.EventArea,
                     JestTelemetryConstants.FailedTestCasesFoundButNoFailedSummary, new List<int> { this.stateContext.TestRun.TestRunId }, true);
             }
-            else if (stateContext.VerboseOptionEnabled && testRunToPublish.TestRunSummary.TotalFailed != testRunToPublish.FailedTests.Count)
+            else if (testRunToPublish.TestRunSummary.TotalFailed != testRunToPublish.FailedTests.Count)
             {
                 // If encountered failed tests does not match summary fire telemtry
                 this.logger.Error($"JestTestResultParser : Failed tests count does not match failed summary" +
@@ -205,18 +205,9 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
                     break;
 
                 case JestParserStates.ExpectingTestResults:
-                    if (testRunToPublish.PassedTests.Count != 0
-                        || testRunToPublish.FailedTests.Count != 0
-                        || testRunToPublish.SkippedTests.Count != 0)
-                    {
-                        this.logger.Error("JestTestResultParser : Skipping publish as testcases were encountered but no summary was encountered.");
-                        telemetry.AddToCumulativeTelemetry(JestTelemetryConstants.EventArea,
-                            JestTelemetryConstants.TestCasesFoundButNoSummary, new List<int> { this.stateContext.TestRun.TestRunId }, true);
-                    }
-
-                    break;
 
                 case JestParserStates.ExpectingStackTraces:
+
                     if (testRunToPublish.PassedTests.Count != 0
                         || testRunToPublish.FailedTests.Count != 0
                         || testRunToPublish.SkippedTests.Count != 0)
@@ -228,16 +219,26 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
 
                     break;
 
-                default:
-                    // Publish the test run if reset and publish was called from any state other than the test results state
+                case JestParserStates.ExpectingTestRunSummary:
 
-                    // Calculate total tests
-                    testRunToPublish.TestRunSummary.TotalTests =
-                        testRunToPublish.TestRunSummary.TotalPassed +
-                        testRunToPublish.TestRunSummary.TotalFailed +
-                        testRunToPublish.TestRunSummary.TotalSkipped;
+                    if (testRunToPublish.TestRunSummary.TotalTests == 0)
+                    {
+                        this.logger.Error("JestTestResultParser : Skipping publish as total tests was 0.");
+                        telemetry.AddToCumulativeTelemetry(JestTelemetryConstants.EventArea,
+                            JestTelemetryConstants.TotalTestsZero, new List<int> { this.stateContext.TestRun.TestRunId }, true);
+                        break;
+                    }
 
+                    if (testRunToPublish.TestRunSummary.TotalExecutionTime.TotalMilliseconds == 0)
+                    {
+                        this.logger.Error("JestTestResultParser : Total test run time was 0 or not encountered.");
+                        telemetry.AddToCumulativeTelemetry(JestTelemetryConstants.EventArea,
+                            JestTelemetryConstants.TotalTestRunTimeZero, new List<int> { this.stateContext.TestRun.TestRunId }, true);
+                    }
+
+                    // Only publish if total tests was not zero
                     this.testRunManager.PublishAsync(testRunToPublish);
+
                     break;
             }
 
@@ -265,12 +266,12 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
             (this.testRunStart = new JestExpectingTestRunStart(AttemptPublishAndResetParser, this.logger, telemetry));
 
         private ITestResultParserState ExpectingTestResults => this.expectingTestResults ??
-            (this.expectingTestResults = new JestExpectingTestRunStart(AttemptPublishAndResetParser, this.logger, telemetry));
+            (this.expectingTestResults = new JestExpectingTestResults(AttemptPublishAndResetParser, this.logger, telemetry));
 
         private ITestResultParserState ExpectingStackTraces => this.expectingStackTraces ??
-            (this.expectingStackTraces = new JestExpectingTestRunStart(AttemptPublishAndResetParser, this.logger, telemetry));
+            (this.expectingStackTraces = new JestExpectingStackTraces(AttemptPublishAndResetParser, this.logger, telemetry));
 
         private ITestResultParserState ExpectingTestRunSummary => this.expectingTestRunSummary ??
-            (this.expectingTestRunSummary = new JestExpectingTestRunStart(AttemptPublishAndResetParser, this.logger, telemetry));
+            (this.expectingTestRunSummary = new JestExpectingTestRunSummary(AttemptPublishAndResetParser, this.logger, telemetry));
     }
 }

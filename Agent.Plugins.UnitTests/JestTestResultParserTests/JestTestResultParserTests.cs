@@ -20,37 +20,45 @@ namespace Agent.Plugins.UnitTests.JestTestResultParserTests
 
         #region DataDrivenTests
 
-//        [DataTestMethod]
-//        [DynamicData(nameof(GetSuccessScenariosTestCases), DynamicDataSourceType.Method)]
-//        public void SuccessScenariosWithBasicAssertions(string testCase)
-//        {
-//            testCase = Path.Combine("JestTestResultParserTests", "Resources", "SuccessScenarios", testCase);
-//            TestSuccessScenariosWithBasicAssertions(testCase, true);
-//        }
+       [DataTestMethod]
+       [DynamicData(nameof(GetSuccessScenariosTestCases), DynamicDataSourceType.Method)]
+       public void SuccessScenariosWithBasicAssertions(string testCase)
+       {
+           testCase = Path.Combine("JestTestResultParserTests", "Resources", "SuccessScenarios", testCase);
+           TestSuccessScenariosWithBasicAssertions(testCase, true);
+       }
 
-        //[DataTestMethod]
-        //[DynamicData(nameof(GetPartialSuccessTestCases), DynamicDataSourceType.Method)]
-        //public void PartialSuccessScenariosWithBasicAssertions(string testCase)
-        //{
-        //    testCase = Path.Combine("JestTestResultParserTests", "Resources", "PartialSuccess", testCase);
-        //    TestPartialSuccessScenariosWithBasicAssertions(testCase);
-        //}
-//
-//        [DataTestMethod]
-//        [DynamicData(nameof(GetDetailedTestsTestCases), DynamicDataSourceType.Method)]
-//        public void DetailedAssertions(string testCase)
-//        {
-//            testCase = Path.Combine("JestTestResultParserTests", "Resources", "DetailedTests", testCase);
-//            TestWithDetailedAssertions(testCase);
-//        }
+        [DataTestMethod]
+        [DynamicData(nameof(GetPartialSuccessTestCases), DynamicDataSourceType.Method)]
+        public void PartialSuccessScenariosWithBasicAssertions(string testCase)
+        {
+            testCase = Path.Combine("JestTestResultParserTests", "Resources", "PartialSuccess", testCase);
+            TestPartialSuccessScenariosWithBasicAssertions(testCase);
+        }
 
-        //[DataTestMethod]
-        //[DynamicData(nameof(GetNegativeTestsTestCases), DynamicDataSourceType.Method)]
-        //public void NegativeTests(string testCase)
-        //{
-        //    testCase = Path.Combine("JestTestResultParserTests", "Resources", "NegativeTests", testCase);
-        //    TestNegativeTestsScenarios(testCase);
-        //}
+        [DataTestMethod]
+        [DynamicData(nameof(GetDetailedTestsTestCases), DynamicDataSourceType.Method)]
+        public void DetailedAssertions(string testCase)
+        {
+            testCase = Path.Combine("JestTestResultParserTests", "Resources", "DetailedTests", testCase);
+            TestWithDetailedAssertions(testCase);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(GetNegativeTestsTestCases), DynamicDataSourceType.Method)]
+        public void NegativeTests(string testCase)
+        {
+            testCase = Path.Combine("JestTestResultParserTests", "Resources", "NegativeTests", testCase);
+            TestNegativeTestsScenarios(testCase);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(GetCommonNegativeTestsTestCases), DynamicDataSourceType.Method)]
+        public void CommonNegativeTests(string testCase)
+        {
+            testCase = Path.Combine("CommonTestResources", "NegativeTests", testCase);
+            TestNegativeTestsScenarios(testCase);
+        }
 
         #endregion
 
@@ -74,6 +82,11 @@ namespace Agent.Plugins.UnitTests.JestTestResultParserTests
         public static IEnumerable<object[]> GetNegativeTestsTestCases()
         {
             return GetTestCasesFromRelativePath(Path.Combine("JestTestResultParserTests", "Resources", "NegativeTests"));
+        }
+
+        public static IEnumerable<object[]> GetCommonNegativeTestsTestCases()
+        {
+            return GetTestCasesFromRelativePath(Path.Combine("CommonTestResources", "NegativeTests"));
         }
 
         #endregion

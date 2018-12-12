@@ -26,7 +26,8 @@ namespace Agent.Plugins.Log.TestResultParser.Parser
         {
             var jestStateContext = stateContext as JestParserStateContext;
 
-            // Do we want to use PASS/FAIL information here?
+            this.logger.Info($"JestTestResultParser : ExpectingTestRunStart : Transitioned to state ExpectingTestResults" +
+                $" at line {jestStateContext.CurrentLineNumber}.");
 
             return JestParserStates.ExpectingTestResults;
         }

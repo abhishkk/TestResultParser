@@ -96,7 +96,7 @@ namespace Agent.Plugins.UnitTests
                 this.parser.Parse(line);
             }
 
-            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Once, $"Expected a test run to have been PublishAsynced.");
+            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Once, $"Expected a test run to have been Published.");
         }
 
         public void TestNegativeTestsScenarios(string testCase)
@@ -106,7 +106,7 @@ namespace Agent.Plugins.UnitTests
                 this.parser.Parse(line);
             }
 
-            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Never, $"Expected no test run to have been PublishAsynced.");
+            testRunManagerMock.Verify(x => x.PublishAsync(It.IsAny<TestRun>()), Times.Never, $"Expected no test run to have been Published.");
         }
 
         #region Data Drivers
