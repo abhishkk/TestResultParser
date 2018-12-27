@@ -1,0 +1,22 @@
+﻿npm@2.9.0 node_modules/npm
+5.92s$ npm test
+> pui-cursor@0.0.7 test /home/travis/build/pivotal-cf/pui-cursor
+> gulp spec
+[22:59:54] Using gulpfile ~/build/pivotal-cf/pui-cursor/gulpfile.js
+[22:59:54] Starting 'spec'...
+[22:59:55] Starting 'lint'...
+[22:59:55] Finished 'lint' after 653 ms
+[22:59:55] Starting 'jasmine-ci'...
+Jasmine server listening on port 8000
+[22:59:58] Finished 'jasmine-ci' after 2.73 s
+[22:59:58] Finished 'spec' after 3.39 s
+Started
+.................
+17 specs, 0 failures
+Finished in 0.023 seconds
+The command "npm test" exited with 0.
+Started
+.................
+Finished in 0.023 seconds
+17 specs, 0 failures
+Done. Your build exited with 0.

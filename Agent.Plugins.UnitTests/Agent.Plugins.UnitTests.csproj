@@ -24,6 +24,9 @@
     <Content Include="JestTestResultParserTests\Resources\**\*.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="JasmineTestResultParserTests\Resources\**\*.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -32,4 +35,3 @@
   </ItemGroup>
 
 </Project>
-
